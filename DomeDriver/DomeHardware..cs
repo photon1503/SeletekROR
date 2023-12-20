@@ -51,6 +51,7 @@ namespace ASCOM.photonSeletek.Dome
         internal static AstroUtils astroUtilities; // ASCOM AstroUtilities object for use as required
         internal static TraceLogger tl; // Local server's trace logger object for diagnostic log with information that you specify
 
+        internal static Firefly firefly;
      
     
 
@@ -72,6 +73,7 @@ namespace ASCOM.photonSeletek.Dome
                 // ReadProfile has to go here before anything is written to the log because it loads the TraceLogger enable / disable state.
                 ReadProfile(); // Read device configuration from the ASCOM Profile store, including the trace state
 
+                firefly = new Firefly();
          
 
                 LogMessage("DomeHardware", $"Static initialiser completed.");
@@ -392,6 +394,7 @@ namespace ASCOM.photonSeletek.Dome
         {
             // This is a mandatory parameter but we have no action to take in this simple driver
            
+            Firefly.Stop();
             LogMessage("AbortSlew", "Completed");
         }
 
@@ -558,6 +561,7 @@ namespace ASCOM.photonSeletek.Dome
         internal static void CloseShutter()
         {
 
+            Firefly.Close();
             LogMessage("CloseShutter", "Shutter has been closed");
             domeShutterState = false;
         }
@@ -576,7 +580,7 @@ namespace ASCOM.photonSeletek.Dome
         /// </summary>
         internal static void OpenShutter()
         {
-
+            Firefly.Open();
             LogMessage("OpenShutter", "Shutter has been opened");
             domeShutterState = true;
         }
