@@ -611,6 +611,15 @@ namespace ASCOM.photonSeletek.Dome
             get
             {
                 LogMessage("ShutterStatus Get", false.ToString());
+                switch (Firefly.GetFFState())
+                {
+                    case Firefly.State.Open: return ShutterState.shutterOpen; break;
+                    case Firefly.State.Closed: return ShutterState.shutterClosed; break;
+                    case Firefly.State.Opening: return ShutterState.shutterOpening; break;
+                    case Firefly.State.Closing: return ShutterState.shutterClosing; break;
+                    case Firefly.State.Unknown: return ShutterState.shutterError; break;
+
+                }
                 if (domeShutterState)
                 {
                     LogMessage("ShutterStatus", ShutterState.shutterOpen.ToString());
@@ -677,7 +686,7 @@ namespace ASCOM.photonSeletek.Dome
             get
             {
                 LogMessage("Slewing Get", false.ToString());
-                return false;
+                return Firefly.isSlewing;
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,9 @@ namespace ASCOM.LocalServer
     {
 
         public enum State { Open, Opening, Closing, Closed, Unknown }
-        static State currentState = State.Unknown;
+        public static State currentState = State.Unknown;
+        public static bool isSlewing = false;
+        public static bool abort = false;
 
         internal static FireflyEXP.Help firefly = null;
 
@@ -49,6 +52,11 @@ namespace ASCOM.LocalServer
             }
         }
 
+        public static State GetFFState()
+        {
+            return currentState;
+        }
+
         public static string GetState()
         {
             return currentState.ToString();
@@ -81,6 +89,8 @@ namespace ASCOM.LocalServer
             }
         }
 
+        
+
         public static void ActivateRelais()
         {
             Console.WriteLine("Activating relais");
@@ -90,6 +100,7 @@ namespace ASCOM.LocalServer
         public static void Stop()
         {
             ActivateRelais();
+            abort = true;
             currentState = State.Unknown;
         }
 
@@ -102,47 +113,54 @@ namespace ASCOM.LocalServer
             DateTime startTime = DateTime.Now;
             int retries = 0;
             ActivateRelais();
+            isSlewing = true;
 
             //checkMovementOpen();
             Console.WriteLine("Checking movement");
 
-            Thread.Sleep(1000);
-
-            // if current sensor does not change state
-            while ((newState == State.Open && isRoofClosed) ||
-                   (newState == State.Closed && isRoofOpen))
-            {
-                if (DateTime.Now.Subtract(startTime).TotalSeconds > 10)
-                {
-                    Console.WriteLine("Roof is not moving");
-                    ActivateRelais();
-                    Thread.Sleep(1000);
-                    startTime = DateTime.Now;
-                }
-                Thread.Sleep(100);
-            }
-
-            StateTransition();
-            PrintState();
-
-            startTime = DateTime.Now;
-            while (newState != currentState)
-            {
-                SetStateFromSensor();
-
-                if (DateTime.Now.Subtract(startTime).TotalSeconds > 30)
-                {
-                    Console.WriteLine("Retrying to move roof");
-                    ActivateRelais();
-                    Thread.Sleep(1000);
-                    ActivateRelais();
-                    retries++;
-                    startTime = DateTime.Now;
-                }
+            abort = false;
+         
                 Thread.Sleep(1000);
-                Console.Write(".");
-            }
-            PrintState();
+
+                // if current sensor does not change state
+                while ((newState == State.Open && isRoofClosed) ||
+                       (newState == State.Closed && isRoofOpen))
+                {
+                if (abort) break;
+                    if (DateTime.Now.Subtract(startTime).TotalSeconds > 10)
+                    {
+                        Console.WriteLine("Roof is not moving");
+                        ActivateRelais();
+                        Thread.Sleep(1000);
+                        startTime = DateTime.Now;
+                    }
+                    Thread.Sleep(100);
+                }
+
+                StateTransition();
+                PrintState();
+
+                startTime = DateTime.Now;
+                while (newState != currentState)
+                {
+                    SetStateFromSensor();
+                if (abort) break;
+                    if (DateTime.Now.Subtract(startTime).TotalSeconds > 30)
+                    {
+                        Console.WriteLine("Retrying to move roof");
+                        ActivateRelais();
+                        Thread.Sleep(1000);
+                        ActivateRelais();
+                        retries++;
+                        startTime = DateTime.Now;
+                    }
+                    Thread.Sleep(1000);
+                    Console.Write(".");
+                }
+                PrintState();
+            
+            abort = false;
+            isSlewing = false;
         }
 
         public static void Open()

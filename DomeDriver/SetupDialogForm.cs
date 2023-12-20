@@ -112,5 +112,10 @@ namespace ASCOM.photonSeletek.Dome
                 TopMost = false;
             }
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

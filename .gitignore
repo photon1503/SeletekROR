@@ -13,6 +13,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Certicates
+Installer/My*
+
+*.exe
+
 # Mono auto generated files
 mono_crash.*
 
