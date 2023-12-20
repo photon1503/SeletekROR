@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASCOM.photonSeletek.Dome;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,17 +7,19 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ASCOM.LocalServer
 {
-    public class Firefly
+    public class Firefly : IDisposable
     {
 
         public enum State { Open, Opening, Closing, Closed, Unknown }
         public static State currentState = State.Unknown;
         public static bool isSlewing = false;
         public static bool abort = false;
+        private Thread statusThread;
 
         internal static FireflyEXP.Help firefly = null;
 
@@ -24,22 +27,57 @@ namespace ASCOM.LocalServer
         internal const int seletekSensorRoofOpen = 2;
         internal const int seletekSensorRoofClosed = 1;
 
+        public static ControlForm UserForm;
+
         public Firefly()
         {
             firefly = new FireflyEXP.Help();
+            UserForm = new ControlForm();
+            // Start a new thread to show the status window
+            statusThread = new Thread(() =>
+            {
+                System.Windows.Forms.Application.Run(UserForm);
+            });
 
-            Console.WriteLine($"Sensors: open = {isRoofOpen} close = {isRoofClosed}");
+            statusThread.Start();
+
+
+            //Console.WriteLine($"Sensors: open = {isRoofOpen} close = {isRoofClosed}");
+            UserForm.SetText($"Sensors: open = {isRoofOpen}, close = {isRoofClosed}");
 
 
             SetStateFromSensor();
+            UserForm.SetStatus(GetState());
         }
 
-        
-        ~Firefly()
+        public void CloseStatusWindow()
         {
-            firefly = null;
+            if (UserForm != null && !UserForm.IsDisposed)
+            {
+                UserForm.Invoke(new Action(() => { UserForm.Close(); }));
+            }
         }
-        
+
+
+     
+
+        public void Dispose()
+        {
+            // Dispose of any unmanaged resources here
+            // Implement cleanup logic
+
+            // If you have any disposable fields, you can call their Dispose() methods too
+
+            // Example:
+            // if (myDisposableField != null)
+            // {
+            //     myDisposableField.Dispose();
+            // }
+
+            CloseStatusWindow();
+            // Suppress finalization (if you have a finalizer/destructor)
+            GC.SuppressFinalize(this);
+        }
 
         private static void StateTransition()
         {
@@ -64,7 +102,8 @@ namespace ASCOM.LocalServer
 
         public static void PrintState()
         {
-            Console.WriteLine($"Roof state is {GetState()}");
+            //Console.WriteLine($"Roof state is {GetState()}");
+            UserForm.SetStatus(GetState());
         }
 
         public static void SetStateFromSensor()
@@ -93,7 +132,8 @@ namespace ASCOM.LocalServer
 
         public static void ActivateRelais()
         {
-            Console.WriteLine("Activating relais");
+            
+            UserForm.SetText("Activating relay");
             firefly.RelayChange(seletekRelayNo);
         }
 
@@ -116,7 +156,7 @@ namespace ASCOM.LocalServer
             isSlewing = true;
 
             //checkMovementOpen();
-            Console.WriteLine("Checking movement");
+            UserForm.SetText("Checking movement");
 
             abort = false;
          
@@ -129,7 +169,7 @@ namespace ASCOM.LocalServer
                 if (abort) break;
                     if (DateTime.Now.Subtract(startTime).TotalSeconds > 10)
                     {
-                        Console.WriteLine("Roof is not moving");
+                    UserForm.SetText("Roof is not moving");
                         ActivateRelais();
                         Thread.Sleep(1000);
                         startTime = DateTime.Now;
@@ -147,7 +187,7 @@ namespace ASCOM.LocalServer
                 if (abort) break;
                     if (DateTime.Now.Subtract(startTime).TotalSeconds > 30)
                     {
-                        Console.WriteLine("Retrying to move roof");
+                    UserForm.SetText("Retrying to move roof");
                         ActivateRelais();
                         Thread.Sleep(1000);
                         ActivateRelais();
@@ -165,10 +205,10 @@ namespace ASCOM.LocalServer
 
         public static void Open()
         {
-            Console.WriteLine("Opening roof");
+            UserForm.SetText("Opening roof");
             if (currentState == State.Open)
             {
-                Console.WriteLine($"Roof is already open");
+                UserForm.SetText($"Roof is already open");
                 return;
             }
 
@@ -177,11 +217,11 @@ namespace ASCOM.LocalServer
 
         public static void Close()
         {
-            Console.WriteLine("Closing roof");
+            UserForm.SetText("Closing roof");
 
             if (currentState == State.Closed)
             {
-                Console.WriteLine($"Roof is already closed");
+                UserForm.SetText($"Roof is already closed");
                 return;
             }
 

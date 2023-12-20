@@ -73,7 +73,7 @@ namespace ASCOM.photonSeletek.Dome
                 // ReadProfile has to go here before anything is written to the log because it loads the TraceLogger enable / disable state.
                 ReadProfile(); // Read device configuration from the ASCOM Profile store, including the trace state
 
-                firefly = new Firefly();
+                
          
 
                 LogMessage("DomeHardware", $"Static initialiser completed.");
@@ -297,6 +297,7 @@ namespace ASCOM.photonSeletek.Dome
                     LogMessage("Connected Set", $"Connecting to port {comPort}");
 
                     // TODO insert connect to the device code here
+                    firefly = new Firefly();
 
                     connectedState = true;
                 }
@@ -305,6 +306,7 @@ namespace ASCOM.photonSeletek.Dome
                     LogMessage("Connected Set", $"Disconnecting from port {comPort}");
 
                     // TODO insert disconnect from the device code here
+                    firefly.Dispose();
 
                     connectedState = false;
                 }
