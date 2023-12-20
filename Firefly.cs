@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace ASCOM.LocalServer.Server
+namespace ASCOM.LocalServer
 {
-    internal class Firefly
+    public class Firefly
     {
         internal static FireflyEXP.Help firefly;
 
@@ -14,12 +15,12 @@ namespace ASCOM.LocalServer.Server
         internal const int seletekSensorRoofOpen = 2;
         internal const int seletekSensorRoofClosed = 1;
 
-        internal Firefly()
+        public Firefly()
         {
             firefly = new FireflyEXP.Help();
         }
 
-        private static bool isRoofOpen
+        public static bool isRoofOpen
         {
             get
             {
@@ -27,7 +28,7 @@ namespace ASCOM.LocalServer.Server
             }
         }
 
-        private static bool isRoofClosed
+        public static bool isRoofClosed
         {
             get
             {
@@ -35,7 +36,7 @@ namespace ASCOM.LocalServer.Server
             }
         }
 
-        private static void ActivateRelais()
+        public static void ActivateRelais()
         {
             Console.WriteLine("Activating relais");                
             firefly.RelayChange(seletekRelayNo);
@@ -43,7 +44,7 @@ namespace ASCOM.LocalServer.Server
 
         public static void checkMovementOpen()
         {
-            console.WriteLine("Checking movement open");
+            Console.WriteLine("Checking movement open");
             DateTime startTime = DateTime.Now;
 
             while (isRoofClosed){
@@ -52,12 +53,12 @@ namespace ASCOM.LocalServer.Server
                     ActivateRelais();
                 }
             }
-            console.WriteLine("Roof is opening");
+            Console.WriteLine("Roof is opening");
         }
 
      public static void checkMovementClose()
         {
-            console.WriteLine("Checking movement closing");
+            Console.WriteLine("Checking movement closing");
             DateTime startTime = DateTime.Now;
 
             while (isRoofOpen){
@@ -66,7 +67,7 @@ namespace ASCOM.LocalServer.Server
                     ActivateRelais();
                 }
             }
-            console.WriteLine("Roof is closing");
+            Console.WriteLine("Roof is closing");
         }
 
         public static void Stop()
@@ -77,8 +78,8 @@ namespace ASCOM.LocalServer.Server
         public static void Retry()
         {
             Console.WriteLine("Retrying to move roof");
-            ActivateRelais();         
-            Sleep(1000);
+            ActivateRelais();
+            Thread.Sleep(1000);
             ActivateRelais();         
         }
 
@@ -103,7 +104,7 @@ namespace ASCOM.LocalServer.Server
                     retries++;           
                      startTime = DateTime.Now;
                 }
-                Sleep(1000);
+                Thread.Sleep(1000);
             }
             Console.WriteLine("Roof is open");                
         }
@@ -129,19 +130,11 @@ namespace ASCOM.LocalServer.Server
                     retries++;      
                      startTime = DateTime.Now;     
                 }
-                Sleep(1000);
+                Thread.Sleep(1000);
             }
-            console.WriteLine("Roof is closed");
+            Console.WriteLine("Roof is closed");
         }
     }
 
-    //main
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Firefly.Open();
-            Firefly.Close();
-        }
-    }
+
 }

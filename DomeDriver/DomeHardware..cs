@@ -557,7 +557,6 @@ namespace ASCOM.photonSeletek.Dome
         /// </summary>
         internal static void CloseShutter()
         {
-            firefly.RelayChange(seletekRelayNo);
 
             LogMessage("CloseShutter", "Shutter has been closed");
             domeShutterState = false;
@@ -577,7 +576,6 @@ namespace ASCOM.photonSeletek.Dome
         /// </summary>
         internal static void OpenShutter()
         {
-            firefly.RelayChange(seletekRelayNo);
 
             LogMessage("OpenShutter", "Shutter has been opened");
             domeShutterState = true;
