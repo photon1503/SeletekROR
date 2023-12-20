@@ -377,7 +377,7 @@ namespace ASCOM.photonSeletek.Dome
             // TODO customise this device name as required
             get
             {
-                string name = "Short driver name - please customise";
+                string name = "Seletek Firefly Dome";
                 LogMessage("Name Get", name);
                 return name;
             }
@@ -387,7 +387,6 @@ namespace ASCOM.photonSeletek.Dome
 
         #region IDome Implementation
 
-        private static bool domeShutterState = false; // Variable to hold the open/closed status of the shutter, true = Open
 
         /// <summary>
         /// Immediately stops any and all movement of the dome.
@@ -565,7 +564,6 @@ namespace ASCOM.photonSeletek.Dome
 
             Firefly.Close();
             LogMessage("CloseShutter", "Shutter has been closed");
-            domeShutterState = false;
         }
 
         /// <summary>
@@ -584,7 +582,6 @@ namespace ASCOM.photonSeletek.Dome
         {
             Firefly.Open();
             LogMessage("OpenShutter", "Shutter has been opened");
-            domeShutterState = true;
         }
 
         /// <summary>
@@ -622,16 +619,7 @@ namespace ASCOM.photonSeletek.Dome
                     case Firefly.State.Unknown: return ShutterState.shutterError; break;
 
                 }
-                if (domeShutterState)
-                {
-                    LogMessage("ShutterStatus", ShutterState.shutterOpen.ToString());
-                    return ShutterState.shutterOpen;
-                }
-                else
-                {
-                    LogMessage("ShutterStatus", ShutterState.shutterClosed.ToString());
-                    return ShutterState.shutterClosed;
-                }
+                return ShutterState.shutterError;
             }
         }
 
