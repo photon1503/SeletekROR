@@ -1,4 +1,5 @@
-﻿using ASCOM.photonSeletek.Dome;
+﻿using ASCOM;
+using ASCOM.photonSeletek.Dome;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,11 +163,12 @@ namespace ASCOM.LocalServer
         /// <param name="timeoutSeconds"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
+        private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
         {
             if (DateTime.Now.Subtract(startTime).TotalSeconds > timeoutSeconds)
             {
                 UserForm.SetText(message);
+          
                 return true; // Timeout reached
             }
             return false; // Timeout not reached
@@ -201,7 +203,10 @@ namespace ASCOM.LocalServer
             {
                 if (abort) break;
 
-                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timout reached")) break;
+                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timout reached"))
+                {
+                    throw new DriverException("Roof is not moving, Timout reached");
+                }
 
                 if (CheckTimeout(lastRetryTime, timoutSensor, "Roof is not moving"))
                 {
@@ -222,7 +227,10 @@ namespace ASCOM.LocalServer
                 SetStateFromSensor();
                 if (abort) break;
 
-                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timeout reached")) break;
+                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timeout reached"))
+                {
+                    throw new DriverException("Roof is not moving, Timout reached");
+                }
 
                 if (CheckTimeout(lastRetryTime, timoutRoofCycleCompletion, $"Retrying to move roof. Retry #{retries}"))
                 {
