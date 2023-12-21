@@ -39,7 +39,7 @@ namespace ASCOM.LocalServer
             this.ClientSize = new System.Drawing.Size(346, 70);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FrmMain";
-            this.Text = "Seletek Firefly Dome by photon";
+            this.Text = "Seletek Firefly RoR by photon";
             this.ResumeLayout(false);
 
         }

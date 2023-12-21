@@ -14,42 +14,56 @@ namespace ASCOM.LocalServer
 {
     public class Firefly : IDisposable
     {
-
         public enum State { Open, Opening, Closing, Closed, Unknown }
         public static State currentState = State.Unknown;
         public static bool isSlewing = false;
         public static bool abort = false;
         private Thread statusThread;
-
         internal static FireflyEXP.Help firefly = null;
-
         internal const int seletekRelayNo = 1;
         internal const int seletekSensorRoofOpen = 2;
         internal const int seletekSensorRoofClosed = 1;
+        internal const int delayRelay = 1000;       //Delay between multiple relay activations in milliseconds
+        internal const int delaySensor = 100;       //Delay between sensor checks in milliseconds
+        internal const int timoutSensor = 10;      //Timeout for sensor checks in seconds
+        internal const int timoutTotal = 300;      //Total timeout for roof movement in seconds
+        internal const int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
 
         public static ControlForm UserForm;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Firefly()
         {
             firefly = new FireflyEXP.Help();
             UserForm = new ControlForm();
+
             // Start a new thread to show the status window
             statusThread = new Thread(() =>
             {
                 System.Windows.Forms.Application.Run(UserForm);
             });
-
             statusThread.Start();
 
-
-            //Console.WriteLine($"Sensors: open = {isRoofOpen} close = {isRoofClosed}");
-            UserForm.SetText($"Sensors: open = {isRoofOpen}, close = {isRoofClosed}");
-
+            UserForm.SetText($"Sensors: open={isRoofOpen}, closed={isRoofClosed}");
 
             SetStateFromSensor();
-            UserForm.SetStatus(GetState());
+            UserForm.SetStatus(GetStateString());
         }
 
+        /// <summary>
+        /// Destructor
+        /// </summary>
+        public void Dispose()
+        {
+            CloseStatusWindow();
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Close the status window
+        /// </summary>
         public void CloseStatusWindow()
         {
             if (UserForm != null && !UserForm.IsDisposed)
@@ -58,28 +72,10 @@ namespace ASCOM.LocalServer
             }
         }
 
-
-     
-
-        public void Dispose()
-        {
-            // Dispose of any unmanaged resources here
-            // Implement cleanup logic
-
-            // If you have any disposable fields, you can call their Dispose() methods too
-
-            // Example:
-            // if (myDisposableField != null)
-            // {
-            //     myDisposableField.Dispose();
-            // }
-
-            CloseStatusWindow();
-            // Suppress finalization (if you have a finalizer/destructor)
-            GC.SuppressFinalize(this);
-        }
-
-        private static void StateTransition()
+        /// <summary>
+        /// Transition the state of the roof
+        /// </summary>
+        private static void TransitNextState()
         {
             switch (currentState)
             {
@@ -90,28 +86,33 @@ namespace ASCOM.LocalServer
             }
         }
 
-        public static State GetFFState()
+        public static State GetState()
         {
             return currentState;
         }
 
-        public static string GetState()
+        public static string GetStateString()
         {
             return currentState.ToString();
         }
 
-        public static void PrintState()
+        public static void UpdateStateUI()
         {
-            //Console.WriteLine($"Roof state is {GetState()}");
-            UserForm.SetStatus(GetState());
+            UserForm.SetStatus(GetStateString());
         }
 
+        /// <summary>
+        /// Set the state of the roof from the sensor
+        /// </summary>
         public static void SetStateFromSensor()
         {
             if (isRoofOpen && !isRoofClosed) { currentState = State.Open; }
             if (!isRoofOpen && isRoofClosed) { currentState = State.Closed; }
         }
 
+        /// <summary>
+        /// Check if the roof is open
+        /// </summary>
         public static bool isRoofOpen
         {
             get
@@ -120,6 +121,9 @@ namespace ASCOM.LocalServer
             }
         }
 
+        /// <summary>
+        /// Check if the roof is closed
+        /// </summary>
         public static bool isRoofClosed
         {
             get
@@ -128,104 +132,131 @@ namespace ASCOM.LocalServer
             }
         }
 
-        
 
-        public static void ActivateRelais()
+        /// <summary>
+        /// Activate the relay
+        /// </summary>
+        public static void ActivateRelay()
         {
-            
+
             UserForm.SetText("Activating relay");
             firefly.RelayChange(seletekRelayNo);
+            Thread.Sleep(delayRelay);
         }
 
+        /// <summary>
+        /// Stop any movement
+        /// </summary>
         public static void Stop()
         {
-            ActivateRelais();
+            ActivateRelay();
             abort = true;
             currentState = State.Unknown;
         }
 
 
-
-        public static void Toggle(State newState)
+        /// <summary>
+        /// Check if a timeout has been reached
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="timeoutSeconds"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
         {
-            PrintState();
+            if (DateTime.Now.Subtract(startTime).TotalSeconds > timeoutSeconds)
+            {
+                UserForm.SetText(message);
+                return true; // Timeout reached
+            }
+            return false; // Timeout not reached
+        }
+
+        /// <summary>
+        /// Open or close the roof
+        /// </summary>
+        /// <param name="newState"></param>
+        public static void MoveRoof(State newState)
+        {
+            if (currentState == newState)
+            {
+                UserForm.SetText($"Roof is already {GetStateString()}");
+                return;
+            }
 
             DateTime startTime = DateTime.Now;
+            DateTime lastRetryTime = startTime;
+
             int retries = 0;
-            ActivateRelais();
+            ActivateRelay();
             isSlewing = true;
 
-            //checkMovementOpen();
             UserForm.SetText("Checking movement");
 
             abort = false;
-         
-                Thread.Sleep(1000);
 
-                // if current sensor does not change state
-                while ((newState == State.Open && isRoofClosed) ||
-                       (newState == State.Closed && isRoofOpen))
-                {
+            // First segment - Check for initial movement
+            while ((newState == State.Open && isRoofClosed) ||
+                   (newState == State.Closed && isRoofOpen))
+            {
                 if (abort) break;
-                    if (DateTime.Now.Subtract(startTime).TotalSeconds > 10)
-                    {
-                    UserForm.SetText("Roof is not moving");
-                        ActivateRelais();
-                        Thread.Sleep(1000);
-                        startTime = DateTime.Now;
-                    }
-                    Thread.Sleep(100);
-                }
 
-                StateTransition();
-                PrintState();
+                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timout reached")) break;
 
-                startTime = DateTime.Now;
-                while (newState != currentState)
+                if (CheckTimeout(lastRetryTime, timoutSensor, "Roof is not moving"))
                 {
-                    SetStateFromSensor();
-                if (abort) break;
-                    if (DateTime.Now.Subtract(startTime).TotalSeconds > 30)
-                    {
-                    UserForm.SetText("Retrying to move roof");
-                        ActivateRelais();
-                        Thread.Sleep(1000);
-                        ActivateRelais();
-                        retries++;
-                        startTime = DateTime.Now;
-                    }
-                    Thread.Sleep(1000);
-                    Console.Write(".");
+                    ActivateRelay();
+                    lastRetryTime = DateTime.Now;
                 }
-                PrintState();
-            
+                Thread.Sleep(delaySensor);
+            }
+
+            // Roof is now moving
+            TransitNextState();
+            UpdateStateUI();
+
+            // Second segment - Wait for completion
+            lastRetryTime = DateTime.Now;
+            while (newState != currentState)
+            {
+                SetStateFromSensor();
+                if (abort) break;
+
+                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timeout reached")) break;
+
+                if (CheckTimeout(lastRetryTime, timoutRoofCycleCompletion, $"Retrying to move roof. Retry #{retries}"))
+                {
+                    ActivateRelay();
+                    ActivateRelay();
+                    retries++;
+                    lastRetryTime = DateTime.Now;
+                }
+                Thread.Sleep(delaySensor);
+            }
+            UpdateStateUI();
+
             abort = false;
             isSlewing = false;
         }
 
+        /// <summary>
+        /// Open the roof
+        /// </summary>
         public static void Open()
         {
             UserForm.SetText("Opening roof");
-            if (currentState == State.Open)
-            {
-                UserForm.SetText($"Roof is already open");
-                return;
-            }
 
-            Toggle(State.Open);
+            MoveRoof(State.Open);
         }
 
+        /// <summary>
+        /// Close the roof
+        /// </summary>
         public static void Close()
         {
             UserForm.SetText("Closing roof");
 
-            if (currentState == State.Closed)
-            {
-                UserForm.SetText($"Roof is already closed");
-                return;
-            }
-
-            Toggle(State.Closed);
+            MoveRoof(State.Closed);
         }
     }
 }

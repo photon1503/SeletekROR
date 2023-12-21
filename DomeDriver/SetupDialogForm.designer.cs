@@ -45,7 +45,7 @@ namespace ASCOM.photonSeletek.Dome
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.cmdOK.Location = new System.Drawing.Point(422, 172);
+            this.cmdOK.Location = new System.Drawing.Point(422, 270);
             this.cmdOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(88, 37);
@@ -58,7 +58,7 @@ namespace ASCOM.photonSeletek.Dome
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(422, 218);
+            this.cmdCancel.Location = new System.Drawing.Point(422, 316);
             this.cmdCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(88, 38);
@@ -74,7 +74,7 @@ namespace ASCOM.photonSeletek.Dome
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(215, 48);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Seletek Firefly Dome driver by photon";
+            this.label1.Text = "Seletek Firefly Dome RoR by photon";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // picASCOM
@@ -95,7 +95,7 @@ namespace ASCOM.photonSeletek.Dome
             // chkTrace
             // 
             this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(22, 231);
+            this.chkTrace.Location = new System.Drawing.Point(13, 330);
             this.chkTrace.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkTrace.Name = "chkTrace";
             this.chkTrace.Size = new System.Drawing.Size(97, 24);
@@ -146,7 +146,7 @@ namespace ASCOM.photonSeletek.Dome
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(525, 269);
+            this.ClientSize = new System.Drawing.Size(525, 367);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
@@ -163,7 +163,7 @@ namespace ASCOM.photonSeletek.Dome
             this.Name = "SetupDialogForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Seletek Firefly Setup";
+            this.Text = "Seletek Firefly RoR Setup";
             this.Load += new System.EventHandler(this.SetupDialogForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picASCOM)).EndInit();
             this.ResumeLayout(false);

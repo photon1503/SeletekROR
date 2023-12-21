@@ -43,7 +43,7 @@ namespace ASCOM.photonSeletek.Dome
     [ComVisible(true)]
     [Guid("82d27bcb-e0aa-4706-b148-39869924657e")]
     [ProgId("ASCOM.photonSeletek.Dome")]
-    [ServedClassName("ASCOM Dome Driver for photonSeletek")] // Driver description that appears in the Chooser, customise as required
+    [ServedClassName("Seletek Firefly RoR by photon")] // Driver description that appears in the Chooser, customise as required
     [ClassInterface(ClassInterfaceType.None)]
     public class Dome : ReferenceCountedObjectBase, IDomeV2, IDisposable
     {

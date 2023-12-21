@@ -79,7 +79,7 @@ namespace ASCOM.LocalServer
             driversInUseCount = 0;
             serverLockCount = 0;
             mainThreadId = GetCurrentThreadId();
-            Thread.CurrentThread.Name = "photonSeletek Local Server Thread";
+            Thread.CurrentThread.Name = "Seletek Firefly RoR Local Server Thread";
 
             // Create and configure the local server host form that runs the Windows message loop required to support driver operation
             TL.LogMessage("Main", $"Creating host form");

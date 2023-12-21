@@ -377,7 +377,7 @@ namespace ASCOM.photonSeletek.Dome
             // TODO customise this device name as required
             get
             {
-                string name = "Seletek Firefly Dome";
+                string name = "Seletek Firefly RoR";
                 LogMessage("Name Get", name);
                 return name;
             }

@@ -8,11 +8,11 @@ using System.Runtime.InteropServices;
 //
 // TODO - Add your authorship information here
 [assembly: AssemblyTitle("ASCOM.photonSeletek.Dome")]
-[assembly: AssemblyDescription("ASCOM Local Server Dome driver for photonSeletek")]
+[assembly: AssemblyDescription("Seletek Firefly RoR")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("The ASCOM Initiative")]
-[assembly: AssemblyProduct("ASCOM Local Server Dome driver for photonSeletek")]
-[assembly: AssemblyCopyright("Copyright © 2023 The ASCOM Initiative")]
+[assembly: AssemblyProduct("Seletek Firefly RoR")]
+[assembly: AssemblyCopyright("Copyright © 2023 Gerald Hitz")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
