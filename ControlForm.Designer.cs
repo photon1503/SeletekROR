@@ -35,6 +35,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.lblElapsed = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             // 
             this.lblText.AutoSize = true;
             this.lblText.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblText.Location = new System.Drawing.Point(80, 126);
+            this.lblText.Location = new System.Drawing.Point(81, 300);
             this.lblText.Name = "lblText";
             this.lblText.Size = new System.Drawing.Size(23, 32);
             this.lblText.TabIndex = 2;
@@ -73,7 +74,7 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.panel1.Controls.Add(this.lblStatus);
-            this.panel1.Location = new System.Drawing.Point(60, 175);
+            this.panel1.Location = new System.Drawing.Point(60, 363);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(705, 71);
             this.panel1.TabIndex = 3;
@@ -100,11 +101,22 @@
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // lblElapsed
+            // 
+            this.lblElapsed.AutoSize = true;
+            this.lblElapsed.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblElapsed.Location = new System.Drawing.Point(383, 136);
+            this.lblElapsed.Name = "lblElapsed";
+            this.lblElapsed.Size = new System.Drawing.Size(23, 32);
+            this.lblElapsed.TabIndex = 6;
+            this.lblElapsed.Text = "-";
+            // 
             // ControlForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 258);
+            this.ClientSize = new System.Drawing.Size(800, 446);
+            this.Controls.Add(this.lblElapsed);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.lblText);
@@ -128,5 +140,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label lblElapsed;
     }
 }

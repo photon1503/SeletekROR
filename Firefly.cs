@@ -108,6 +108,7 @@ namespace ASCOM.LocalServer
             UserForm.SetStatus(GetStateString());
         }
 
+        
         /// <summary>
         /// Set the state of the roof from the sensor
         /// </summary>
@@ -171,7 +172,10 @@ namespace ASCOM.LocalServer
         /// <returns></returns>
         private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
         {
-            if (DateTime.Now.Subtract(startTime).TotalSeconds > timeoutSeconds)
+            var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
+            UserForm.SetElapsed($"Elapsed: {Elapsed} seconds");
+
+            if (Elapsed > timeoutSeconds)
             {
                 UserForm.SetText(message);
           
@@ -221,6 +225,8 @@ namespace ASCOM.LocalServer
                 }
                 Thread.Sleep(delaySensor);
             }
+
+            if (abort) return;
 
             // Roof is now moving
             TransitNextState();

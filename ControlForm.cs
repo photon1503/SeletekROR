@@ -43,6 +43,11 @@ namespace ASCOM.photonSeletek.Dome
             lblText.Text = text;
         }
 
+        public void SetElapsed(string text)
+        {
+            lblElapsed.Text = text;
+        }
+
         private void button3_Click(object sender, EventArgs e)
         {
             Firefly.Close();
