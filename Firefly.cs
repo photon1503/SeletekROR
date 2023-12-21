@@ -26,32 +26,32 @@ namespace ASCOM.LocalServer
 
         internal const string identifier = "Seletek.Firefly.ROR";
         internal static int seletekRelayNo = 1;
-        internal static int seletekSensorRoofOpen = 2;
-        internal static int seletekSensorRoofClosed = 1;
-        internal static int delayRelay = 1000;       //Delay between multiple relay activations in milliseconds
-        internal static int delaySensor = 100;       //Delay between sensor checks in milliseconds
-        internal  static int timeoutNoMotion = 10;      //Timeout for sensor checks in seconds
-        internal  static int timoutTotal = 300;      //Total timeout for roof movement in seconds  //TODO: Make this a setting
-        internal const int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
+        internal static int sensorOpenId = 2;
+        internal static int sensorClosedId = 1;
+        internal static int relayPauseMs = 1000;       //Delay between multiple relay activations in milliseconds
+        internal static int sensorPollingMs = 100;       //Delay between sensor checks in milliseconds
+        internal static int noMotionTimeout = 10;      //Timeout for sensor checks in seconds
+        internal static int totalTimeout = 300;      //Total timeout for roof movement in seconds  
+        internal static int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
 
         public static ControlForm UserForm;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Firefly(TraceLogger tlM, int sensorPolling, int RelaysPause, int TotalTimeout, int NoMotionTimeout, int RelayNo, int SensorOpen, int SensorClosed)
+        public Firefly(TraceLogger tlM, int SensorPolling, int RelayPause, int TotalTimeout, int NoMotionTimeout, int RelayNo, int SensorOpen, int SensorClosed)
         {
             firefly = new FireflyEXP.Help();
             tl = tlM;
             tl.LogMessageCrLf(identifier, "Seletek Firefly ROR started");
 
-            delayRelay = RelaysPause;
-            delaySensor = sensorPolling;
-            timoutTotal = TotalTimeout;
-            timeoutNoMotion = NoMotionTimeout;
+            relayPauseMs = RelayPause;
+            sensorPollingMs = SensorPolling;
+            totalTimeout = TotalTimeout;
+            noMotionTimeout = NoMotionTimeout;
             seletekRelayNo = RelayNo;
-            seletekSensorRoofOpen = SensorOpen;
-            seletekSensorRoofClosed = SensorClosed;
+            sensorOpenId = SensorOpen;
+            sensorClosedId = SensorClosed;
 
             //timoutRoofCycleCompletion = TotalTimeout;
 
@@ -67,7 +67,7 @@ namespace ASCOM.LocalServer
             UserForm.SetText($"Sensors: open={isRoofOpen}, closed={isRoofClosed}");
 
             SetStateFromSensor();
-            UserForm.SetStatus(GetStateString());
+            UserForm.UpdateStatus(GetStateString());
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace ASCOM.LocalServer
             return currentState.ToString();
         }
 
-        public static void UpdateStateUI()
+        public static void UpdateStatusUI()
         {
-            UserForm.SetStatus(GetStateString());
+            UserForm.UpdateStatus(GetStateString());
         }
 
         
@@ -136,7 +136,7 @@ namespace ASCOM.LocalServer
         {
             get
             {
-                return (!firefly.SensorDigRead[seletekSensorRoofOpen]);
+                return (!firefly.SensorDigRead[sensorOpenId]);
             }
         }
 
@@ -147,7 +147,7 @@ namespace ASCOM.LocalServer
         {
             get
             {
-                return (!firefly.SensorDigRead[seletekSensorRoofClosed]);
+                return (!firefly.SensorDigRead[sensorClosedId]);
             }
         }
 
@@ -160,8 +160,9 @@ namespace ASCOM.LocalServer
 
             UserForm.SetText("Activating relay");
             firefly.RelayChange(seletekRelayNo);
-            Thread.Sleep(delayRelay);
+            Thread.Sleep(relayPauseMs);
         }
+
 
         /// <summary>
         /// Stop any movement
@@ -174,14 +175,16 @@ namespace ASCOM.LocalServer
         }
 
 
-        /// <summary>
-        /// Check if a timeout has been reached
-        /// </summary>
-        /// <param name="startTime"></param>
-        /// <param name="timeoutSeconds"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
+       /// <summary>
+       /// Check if a timeout has been reached
+       /// </summary>
+       /// <param name="startTime"></param>
+       /// <param name="timeoutSeconds"></param>
+       /// <param name="message"></param>
+       /// <param name="throwException"></param>
+       /// <returns></returns>
+       /// <exception cref="DriverException"></exception>
+        private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message, bool throwException=false)
         {
             var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
           
@@ -190,6 +193,10 @@ namespace ASCOM.LocalServer
             {
                 UserForm.SetText(message);
           
+                if (throwException)
+                {
+                    throw new DriverException(message);
+                }
                 return true; // Timeout reached
             }
             return false; // Timeout not reached
@@ -222,7 +229,7 @@ namespace ASCOM.LocalServer
             ActivateRelay();
             isSlewing = true;
 
-            UserForm.SetText("Checking movement");
+            UserForm.SetText("Checking intial movement");
 
             abort = false;
 
@@ -232,40 +239,34 @@ namespace ASCOM.LocalServer
             {
                 if (abort) break;
 
-                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timout reached"))
-                {
-                    throw new DriverException("Roof is not moving, Timout reached");
-                }
-
+                CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timout reached", true);
+                
                 SetElapsedUI(startTime);
 
-                if (CheckTimeout(lastRetryTime, timeoutNoMotion, "Roof is not moving"))
+                if (CheckTimeout(lastRetryTime, noMotionTimeout, "Roof did not move"))
                 {
                     ActivateRelay();
                     lastRetryTime = DateTime.Now;
                 }
-                Thread.Sleep(delaySensor);
+                Thread.Sleep(sensorPollingMs);
             }
 
             if (abort) return;
 
             // Roof is now moving
             TransitNextState();
-            UpdateStateUI();
+            UpdateStatusUI();
 
             // Second segment - Wait for completion
+            UserForm.SetText("Waiting for roof...");
             lastRetryTime = DateTime.Now;
             while (newState != currentState)
             {
-                SetStateFromSensor();
                 if (abort) break;
 
+                SetStateFromSensor();               
                 SetElapsedUI(startTime);
-
-                if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timeout reached"))
-                {
-                    throw new DriverException("Roof is not moving, Timout reached");
-                }
+                CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timeout reached", true);
 
                 if (CheckTimeout(lastRetryTime, timoutRoofCycleCompletion, $"Retrying to move roof. Retry #{retries}"))
                 {
@@ -274,12 +275,13 @@ namespace ASCOM.LocalServer
                     retries++;
                     lastRetryTime = DateTime.Now;
                 }
-                Thread.Sleep(delaySensor);
+                Thread.Sleep(sensorPollingMs);
             }
-            UpdateStateUI();
-
-            abort = false;
+                        
             isSlewing = false;
+
+            SetStateFromSensor();
+            UpdateStatusUI();
         }
 
         /// <summary>

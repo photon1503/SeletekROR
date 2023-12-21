@@ -28,12 +28,12 @@ namespace ASCOM.photonSeletek.Dome
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            Firefly.Stop();
+            await Task.Run(() => Firefly.Stop());        
         }
 
-        public void SetStatus(string text)
+        public void UpdateStatus(string text)
         {
             lblStatus.Text = text;
         }
@@ -48,14 +48,26 @@ namespace ASCOM.photonSeletek.Dome
             lblElapsed.Text = text;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
-            Firefly.Close();
+            
+           
+            try { await Task.Run(() => Firefly.Close()); }
+            catch (DriverException)
+            {
+                DriverException dex = new DriverException("Error closing the roof. Please check the roof state and try again.");
+                MessageBox.Show(dex.Message);
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Firefly.Open();
+        private async void button2_Click(object sender, EventArgs e)
+        {            
+            try { await Task.Run(() => Firefly.Open());  }
+            catch (DriverException)
+            {
+                DriverException dex = new DriverException("Error opening the roof. Please check the roof state and try again.");
+                MessageBox.Show(dex.Message);
+            }            
         }
     }
 }
