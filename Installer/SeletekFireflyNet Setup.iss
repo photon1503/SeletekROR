@@ -10,7 +10,7 @@ SignTool=MsSign $f
 AppID={{092c7cbb-106d-47d8-9999-a7c4a7b1b77a}
 AppName=SeletekFireflyPhoton
 AppVersion={#myAppVersion}
-AppVerName="Seletek Firefly .NET by photon {#myAppVersion}"
+AppVerName="Seletek Firefly ROR by photon {#myAppVersion}"
 AppPublisher=photon <gerald.hitz@gmail.com>
 AppPublisherURL=mailto:gerald.hitz@gmail.com
 AppSupportURL=https://ascomtalk.groups.io/g/Help
@@ -21,12 +21,12 @@ DefaultDirName="{cf}\ASCOM\Dome"
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 OutputDir="."
-OutputBaseFilename="SeletekFireflyPhoton-Setup-{#myAppVersion}"
+OutputBaseFilename="Seletek Firefly ROR Setup {#myAppVersion}"
 Compression=lzma
 SolidCompression=yes
 ; Put there by Platform if Driver Installer Support selected
 ;WizardImageFile="C:\Program Files (x86)\ASCOM\Platform 6 Developer Components\Installer Generator\Resources\WizardImage.bmp"
-LicenseFile="C:\git\ASCOMProxyHub\LICENSE"
+LicenseFile="C:\git\SeletekROR\LICENSE.txt"
 ; {cf}\ASCOM\Uninstall\Telescope folder created by Platform, always
 UninstallFilesDir="{cf}\ASCOM\Uninstall\Dome\SeletekFireflyPhoton"
 

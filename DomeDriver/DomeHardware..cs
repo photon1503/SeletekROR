@@ -336,7 +336,7 @@ namespace ASCOM.photonSeletek.Dome
             {
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                 // TODO customise this driver description if required
-                string driverInfo = $"Information about the driver itself. Version: {version.Major}.{version.Minor}";
+                string driverInfo = $"Seletek Firefly ASCOM ROR Driver Version: {version.Major}.{version.Minor}";
                 LogMessage("DriverInfo Get", driverInfo);
                 return driverInfo;
             }
@@ -610,7 +610,7 @@ namespace ASCOM.photonSeletek.Dome
             get
             {
                 LogMessage("ShutterStatus Get", false.ToString());
-                switch (Firefly.GetFFState())
+                switch (Firefly.GetState())
                 {
                     case Firefly.State.Open: return ShutterState.shutterOpen; break;
                     case Firefly.State.Closed: return ShutterState.shutterClosed; break;

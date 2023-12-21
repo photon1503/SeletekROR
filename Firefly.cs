@@ -1,4 +1,5 @@
 ﻿using ASCOM;
+using ASCOM.Utilities;
 using ASCOM.photonSeletek.Dome;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace ASCOM.LocalServer
         internal static FireflyEXP.Help firefly = null;
         internal static TraceLogger tl;
 
-        internal const int identifier = "Seletek.Firefly.ROR";
+        internal const string identifier = "Seletek.Firefly.ROR";
         internal const int seletekRelayNo = 1;
         internal const int seletekSensorRoofOpen = 2;
         internal const int seletekSensorRoofClosed = 1;

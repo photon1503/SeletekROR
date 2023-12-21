@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 //
 // TODO - Add your authorship information here
-[assembly: AssemblyTitle("ASCOM.photonSeletek.Dome")]
-[assembly: AssemblyDescription("Seletek Firefly RoR")]
+[assembly: AssemblyTitle("Seletek Firefly ROR")]
+[assembly: AssemblyDescription("Seletek Firefly ROR by photon")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("The ASCOM Initiative")]
-[assembly: AssemblyProduct("Seletek Firefly RoR")]
+[assembly: AssemblyCompany("photon")]
+[assembly: AssemblyProduct("Seletek Firefly ROR by photon")]
 [assembly: AssemblyCopyright("Copyright © 2023 Gerald Hitz")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
