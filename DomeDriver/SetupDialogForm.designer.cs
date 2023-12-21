@@ -34,10 +34,12 @@ namespace ASCOM.photonSeletek.Dome
             this.label1 = new System.Windows.Forms.Label();
             this.picASCOM = new System.Windows.Forms.PictureBox();
             this.chkTrace = new System.Windows.Forms.CheckBox();
-            this.comboBoxComPort = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.cmbRoofOpenSensor = new System.Windows.Forms.ComboBox();
+            this.cmbRoofClosedSensor = new System.Windows.Forms.ComboBox();
+            this.cmbRoofRelayNo = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.picASCOM)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,19 +105,10 @@ namespace ASCOM.photonSeletek.Dome
             this.chkTrace.Text = "Trace on";
             this.chkTrace.UseVisualStyleBackColor = true;
             // 
-            // comboBoxComPort
-            // 
-            this.comboBoxComPort.FormattingEnabled = true;
-            this.comboBoxComPort.Location = new System.Drawing.Point(224, 77);
-            this.comboBoxComPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.comboBoxComPort.Name = "comboBoxComPort";
-            this.comboBoxComPort.Size = new System.Drawing.Size(116, 28);
-            this.comboBoxComPort.TabIndex = 7;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 131);
+            this.label3.Location = new System.Drawing.Point(18, 134);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(142, 20);
@@ -125,7 +118,7 @@ namespace ASCOM.photonSeletek.Dome
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(20, 161);
+            this.label2.Location = new System.Drawing.Point(18, 172);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(152, 20);
@@ -135,22 +128,78 @@ namespace ASCOM.photonSeletek.Dome
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(20, 189);
+            this.label4.Location = new System.Drawing.Point(22, 210);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(148, 20);
             this.label4.TabIndex = 10;
             this.label4.Text = "Roof Relay Number";
             // 
+            // cmbRoofOpenSensor
+            // 
+            this.cmbRoofOpenSensor.FormattingEnabled = true;
+            this.cmbRoofOpenSensor.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"});
+            this.cmbRoofOpenSensor.Location = new System.Drawing.Point(224, 131);
+            this.cmbRoofOpenSensor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbRoofOpenSensor.Name = "cmbRoofOpenSensor";
+            this.cmbRoofOpenSensor.Size = new System.Drawing.Size(116, 28);
+            this.cmbRoofOpenSensor.TabIndex = 11;
+            // 
+            // cmbRoofClosedSensor
+            // 
+            this.cmbRoofClosedSensor.FormattingEnabled = true;
+            this.cmbRoofClosedSensor.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"});
+            this.cmbRoofClosedSensor.Location = new System.Drawing.Point(224, 169);
+            this.cmbRoofClosedSensor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbRoofClosedSensor.Name = "cmbRoofClosedSensor";
+            this.cmbRoofClosedSensor.Size = new System.Drawing.Size(116, 28);
+            this.cmbRoofClosedSensor.TabIndex = 12;
+            // 
+            // cmbRoofRelayNo
+            // 
+            this.cmbRoofRelayNo.FormattingEnabled = true;
+            this.cmbRoofRelayNo.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"});
+            this.cmbRoofRelayNo.Location = new System.Drawing.Point(224, 207);
+            this.cmbRoofRelayNo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbRoofRelayNo.Name = "cmbRoofRelayNo";
+            this.cmbRoofRelayNo.Size = new System.Drawing.Size(116, 28);
+            this.cmbRoofRelayNo.TabIndex = 13;
+            // 
             // SetupDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(525, 367);
+            this.Controls.Add(this.cmbRoofRelayNo);
+            this.Controls.Add(this.cmbRoofClosedSensor);
+            this.Controls.Add(this.cmbRoofOpenSensor);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.comboBoxComPort);
             this.Controls.Add(this.chkTrace);
             this.Controls.Add(this.picASCOM);
             this.Controls.Add(this.label1);
@@ -178,9 +227,11 @@ namespace ASCOM.photonSeletek.Dome
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox picASCOM;
         private System.Windows.Forms.CheckBox chkTrace;
-        private System.Windows.Forms.ComboBox comboBoxComPort;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cmbRoofOpenSensor;
+        private System.Windows.Forms.ComboBox cmbRoofClosedSensor;
+        private System.Windows.Forms.ComboBox cmbRoofRelayNo;
     }
 }

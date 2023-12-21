@@ -31,7 +31,7 @@ namespace ASCOM.LocalServer
         internal const int delayRelay = 1000;       //Delay between multiple relay activations in milliseconds
         internal const int delaySensor = 100;       //Delay between sensor checks in milliseconds
         internal const int timoutSensor = 10;      //Timeout for sensor checks in seconds
-        internal const int timoutTotal = 300;      //Total timeout for roof movement in seconds
+        internal const int timoutTotal = 30;      //Total timeout for roof movement in seconds  //TODO: Make this a setting
         internal const int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
 
         public static ControlForm UserForm;
@@ -173,7 +173,7 @@ namespace ASCOM.LocalServer
         private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message)
         {
             var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
-            UserForm.SetElapsed($"Elapsed: {Elapsed} seconds");
+          
 
             if (Elapsed > timeoutSeconds)
             {
@@ -182,6 +182,14 @@ namespace ASCOM.LocalServer
                 return true; // Timeout reached
             }
             return false; // Timeout not reached
+        }
+        
+        private static void SetElapsedUI(DateTime startTime)
+        {
+            var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
+            
+            string el = $"{Elapsed / 60:00}:{Elapsed % 60:00.0}";
+            UserForm.SetElapsed($"Elapsed: {el}");            
         }
 
         /// <summary>
@@ -218,6 +226,8 @@ namespace ASCOM.LocalServer
                     throw new DriverException("Roof is not moving, Timout reached");
                 }
 
+                SetElapsedUI(startTime);
+
                 if (CheckTimeout(lastRetryTime, timoutSensor, "Roof is not moving"))
                 {
                     ActivateRelay();
@@ -238,6 +248,8 @@ namespace ASCOM.LocalServer
             {
                 SetStateFromSensor();
                 if (abort) break;
+
+                SetElapsedUI(startTime);
 
                 if (CheckTimeout(startTime, timoutTotal, "Roof is not moving, Timeout reached"))
                 {

@@ -37,14 +37,20 @@ namespace ASCOM.photonSeletek.Dome
     internal static class DomeHardware
     {
         // Constants used for Profile persistence
-        internal const string comPortProfileName = "COM Port";
-        internal const string comPortDefault = "COM1";
+
+        internal static string seletekSensorRoofClosedProfileName = "seletekSensorRoofClosed";
+        internal static string seletekSensorRoofOpenProfileName = "seletekSensorRoofOpen";
+        internal static string seletekRelayNoProfileName = "seletekRelayNo";
+
+        internal static int seletekSensorRoofClosedDefault = 1;
+        internal static int seletekSensorRoofOpenDefault = 2;
+        internal static int seletekRelayNoDefault = 1;
+
         internal const string traceStateProfileName = "Trace Level";
         internal const string traceStateDefault = "true";
 
         private static string DriverProgId = ""; // ASCOM DeviceID (COM ProgID) for this driver, the value is set by the driver's class initialiser.
         private static string DriverDescription = ""; // The value is set by the driver's class initialiser.
-        internal static string comPort; // COM port name (if required)
         private static bool connectedState; // Local server's connected state
         private static bool runOnce = false; // Flag to enable "one-off" activities only to run once.
         internal static Util utilities; // ASCOM Utilities object for use as required
@@ -52,8 +58,11 @@ namespace ASCOM.photonSeletek.Dome
         internal static TraceLogger tl; // Local server's trace logger object for diagnostic log with information that you specify
 
         internal static Firefly firefly;
-     
-    
+        internal static int seletekSensorRoofClosed = 1;
+        internal static int seletekSensorRoofOpen = 2;
+        internal static int seletekRelayNo = 1;
+
+
 
 
         /// <summary>
@@ -294,7 +303,7 @@ namespace ASCOM.photonSeletek.Dome
 
                 if (value)
                 {
-                    LogMessage("Connected Set", $"Connecting to port {comPort}");
+                    LogMessage("Connected Set", $"Connecting ");
 
                     // TODO insert connect to the device code here
                     firefly = new Firefly(tl);
@@ -303,7 +312,7 @@ namespace ASCOM.photonSeletek.Dome
                 }
                 else
                 {
-                    LogMessage("Connected Set", $"Disconnecting from port {comPort}");
+                    LogMessage("Connected Set", $"Disconnecting");
 
                     // TODO insert disconnect from the device code here
                     firefly.Dispose();
@@ -731,7 +740,11 @@ namespace ASCOM.photonSeletek.Dome
             {
                 driverProfile.DeviceType = "Dome";
                 tl.Enabled = Convert.ToBoolean(driverProfile.GetValue(DriverProgId, traceStateProfileName, string.Empty, traceStateDefault));
-                comPort = driverProfile.GetValue(DriverProgId, comPortProfileName, string.Empty, comPortDefault);
+                //comPort = driverProfile.GetValue(DriverProgId, comPortProfileName, string.Empty, comPortDefault);
+                seletekRelayNo = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekRelayNoProfileName, string.Empty, seletekRelayNoDefault.ToString()));
+                seletekSensorRoofClosed = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekSensorRoofClosedProfileName, string.Empty, seletekSensorRoofClosedDefault.ToString()));
+                seletekSensorRoofOpen = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekSensorRoofOpenProfileName, string.Empty, seletekSensorRoofOpenDefault.ToString()));
+
             }
         }
 
@@ -744,7 +757,10 @@ namespace ASCOM.photonSeletek.Dome
             {
                 driverProfile.DeviceType = "Dome";
                 driverProfile.WriteValue(DriverProgId, traceStateProfileName, tl.Enabled.ToString());
-                driverProfile.WriteValue(DriverProgId, comPortProfileName, comPort.ToString());
+                
+                driverProfile.WriteValue(DriverProgId, seletekRelayNoProfileName, seletekRelayNo.ToString());
+                driverProfile.GetValue(DriverProgId, seletekSensorRoofClosedProfileName, seletekSensorRoofClosed.ToString());
+                driverProfile.GetValue(DriverProgId, seletekSensorRoofOpenProfileName, seletekSensorRoofOpen.ToString());
             }
         }
 

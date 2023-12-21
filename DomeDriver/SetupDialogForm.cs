@@ -32,20 +32,40 @@ namespace ASCOM.photonSeletek.Dome
 
             tl.Enabled = chkTrace.Checked;
 
-            // Update the COM port variable if one has been selected
-            if (comboBoxComPort.SelectedItem is null) // No COM port selected
+      
+            if (cmbRoofClosedSensor.SelectedItem is null) // No COM port selected
             {
-                tl.LogMessage("Setup OK", $"New configuration values - COM Port: Not selected");
-            }
-            else if (comboBoxComPort.SelectedItem.ToString() == NO_PORTS_MESSAGE)
-            {
-                tl.LogMessage("Setup OK", $"New configuration values - NO COM ports detected on this PC.");
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Closed Sensor: Not selected");
             }
             else // A valid COM port has been selected
             {
-                DomeHardware.comPort = (string)comboBoxComPort.SelectedItem;
-                tl.LogMessage("Setup OK", $"New configuration values - COM Port: {comboBoxComPort.SelectedItem}");
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Closed Sensor: {cmbRoofClosedSensor.SelectedItem}");
+                DomeHardware.seletekSensorRoofClosed = int.Parse(cmbRoofClosedSensor.SelectedItem.ToString());
             }
+
+            if (cmbRoofOpenSensor.SelectedItem is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Open Sensor: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Open Sensor: {cmbRoofOpenSensor.SelectedItem}");
+                DomeHardware.seletekSensorRoofOpen = int.Parse(cmbRoofOpenSensor.SelectedItem.ToString());
+            }
+
+            if (cmbRoofRelayNo.SelectedItem is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Relay No: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+             
+                tl.LogMessage("Setup OK", $"New configuration values - Roof Relay No: {cmbRoofRelayNo.SelectedItem}");
+                DomeHardware.seletekRelayNo = int.Parse(cmbRoofRelayNo.SelectedItem.ToString());
+            }
+      
         }
 
         private void CmdCancel_Click(object sender, EventArgs e) // Cancel button event handler
@@ -76,27 +96,24 @@ namespace ASCOM.photonSeletek.Dome
             // Set the trace checkbox
             chkTrace.Checked = tl.Enabled;
 
-            // set the list of COM ports to those that are currently available
-            comboBoxComPort.Items.Clear(); // Clear any existing entries
-            using (Serial serial = new Serial()) // User the Se5rial component to get an extended list of COM ports
+            
+
+            if (cmbRoofClosedSensor.Items.Contains(DomeHardware.seletekSensorRoofClosed.ToString()))
             {
-                comboBoxComPort.Items.AddRange(serial.AvailableCOMPorts);
+                cmbRoofClosedSensor.SelectedItem = DomeHardware.seletekSensorRoofClosed.ToString();
             }
 
-            // If no ports are found include a message to this effect
-            if (comboBoxComPort.Items.Count == 0)
+            if (cmbRoofOpenSensor.Items.Contains(DomeHardware.seletekSensorRoofOpen.ToString()))
             {
-                comboBoxComPort.Items.Add(NO_PORTS_MESSAGE);
-                comboBoxComPort.SelectedItem = NO_PORTS_MESSAGE;
+                cmbRoofOpenSensor.SelectedItem = DomeHardware.seletekSensorRoofOpen.ToString();
             }
 
-            // select the current port if possible
-            if (comboBoxComPort.Items.Contains(DomeHardware.comPort))
+            if (cmbRoofRelayNo.Items.Contains(DomeHardware.seletekRelayNo.ToString()))
             {
-                comboBoxComPort.SelectedItem = DomeHardware.comPort;
+                cmbRoofRelayNo.SelectedItem = DomeHardware.seletekRelayNo.ToString();
             }
-
-            tl.LogMessage("InitUI", $"Set UI controls to Trace: {chkTrace.Checked}, COM Port: {comboBoxComPort.SelectedItem}");
+            
+            tl.LogMessage("InitUI", $"Set UI controls to Trace: {chkTrace.Checked}");
         }
 
         private void SetupDialogForm_Load(object sender, EventArgs e)
@@ -114,6 +131,11 @@ namespace ASCOM.photonSeletek.Dome
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBoxComPort_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
