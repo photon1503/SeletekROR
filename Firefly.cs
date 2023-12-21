@@ -21,6 +21,9 @@ namespace ASCOM.LocalServer
         public static bool abort = false;
         private Thread statusThread;
         internal static FireflyEXP.Help firefly = null;
+        internal static TraceLogger tl;
+
+        internal const int identifier = "Seletek.Firefly.ROR";
         internal const int seletekRelayNo = 1;
         internal const int seletekSensorRoofOpen = 2;
         internal const int seletekSensorRoofClosed = 1;
@@ -35,9 +38,11 @@ namespace ASCOM.LocalServer
         /// <summary>
         /// Constructor
         /// </summary>
-        public Firefly()
+        public Firefly(TraceLogger tlM)
         {
             firefly = new FireflyEXP.Help();
+            tl = tlM;
+            tl.LogMessageCrLf(identifier, "Seletek Firefly ROR started");
             UserForm = new ControlForm();
 
             // Start a new thread to show the status window

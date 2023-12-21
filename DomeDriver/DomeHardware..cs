@@ -297,7 +297,7 @@ namespace ASCOM.photonSeletek.Dome
                     LogMessage("Connected Set", $"Connecting to port {comPort}");
 
                     // TODO insert connect to the device code here
-                    firefly = new Firefly();
+                    firefly = new Firefly(tl);
 
                     connectedState = true;
                 }
