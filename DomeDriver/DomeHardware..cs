@@ -41,10 +41,19 @@ namespace ASCOM.photonSeletek.Dome
         internal static string seletekSensorRoofClosedProfileName = "seletekSensorRoofClosed";
         internal static string seletekSensorRoofOpenProfileName = "seletekSensorRoofOpen";
         internal static string seletekRelayNoProfileName = "seletekRelayNo";
+        internal static string seletekSensorPollingProfileName = "seletekSensorPolling";
+        internal static string seletekTotalTimeoutProfileName = "seletekTotalTimeout";
+        internal static string seletekNoMotionProfileName = "seletekNoMotion";
+        internal static string seletekRelayPauseProfileName = "seletekRelayPause";
 
         internal static int seletekSensorRoofClosedDefault = 1;
         internal static int seletekSensorRoofOpenDefault = 2;
         internal static int seletekRelayNoDefault = 1;
+        internal static int seletekSensorPollingDefault = 100;
+        internal static int seletekTotalTimeoutDefault = 300;
+        internal static int seletekNoMotionDefault = 10;
+        internal static int seletekRelayPauseDefault = 1000;
+
 
         internal const string traceStateProfileName = "Trace Level";
         internal const string traceStateDefault = "true";
@@ -61,6 +70,11 @@ namespace ASCOM.photonSeletek.Dome
         internal static int seletekSensorRoofClosed = 1;
         internal static int seletekSensorRoofOpen = 2;
         internal static int seletekRelayNo = 1;
+        internal static int seletekSensorPolling = 100;
+        internal static int seletekTotalTimeout = 300;
+        internal static int seletekNoMotion = 10;
+        internal static int seletekRelayPause = 1000;
+
 
 
 
@@ -306,7 +320,7 @@ namespace ASCOM.photonSeletek.Dome
                     LogMessage("Connected Set", $"Connecting ");
 
                     // TODO insert connect to the device code here
-                    firefly = new Firefly(tl);
+                    firefly = new Firefly(tl, seletekSensorPolling, seletekRelayPause, seletekTotalTimeout, seletekNoMotion, seletekRelayNo, seletekSensorRoofOpen, seletekSensorRoofClosed);
 
                     connectedState = true;
                 }
@@ -744,6 +758,11 @@ namespace ASCOM.photonSeletek.Dome
                 seletekRelayNo = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekRelayNoProfileName, string.Empty, seletekRelayNoDefault.ToString()));
                 seletekSensorRoofClosed = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekSensorRoofClosedProfileName, string.Empty, seletekSensorRoofClosedDefault.ToString()));
                 seletekSensorRoofOpen = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekSensorRoofOpenProfileName, string.Empty, seletekSensorRoofOpenDefault.ToString()));
+                seletekSensorPolling = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekSensorPollingProfileName, string.Empty, seletekSensorPollingDefault.ToString()));
+                seletekTotalTimeout = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekTotalTimeoutProfileName, string.Empty, seletekTotalTimeoutDefault.ToString()));
+                seletekNoMotion = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekNoMotionProfileName, string.Empty, seletekNoMotionDefault.ToString()));
+                seletekRelayPause = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekRelayPauseProfileName, string.Empty, seletekRelayPauseDefault.ToString()));
+
 
             }
         }
@@ -759,8 +778,12 @@ namespace ASCOM.photonSeletek.Dome
                 driverProfile.WriteValue(DriverProgId, traceStateProfileName, tl.Enabled.ToString());
                 
                 driverProfile.WriteValue(DriverProgId, seletekRelayNoProfileName, seletekRelayNo.ToString());
-                driverProfile.GetValue(DriverProgId, seletekSensorRoofClosedProfileName, seletekSensorRoofClosed.ToString());
-                driverProfile.GetValue(DriverProgId, seletekSensorRoofOpenProfileName, seletekSensorRoofOpen.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekSensorRoofClosedProfileName, seletekSensorRoofClosed.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekSensorRoofOpenProfileName, seletekSensorRoofOpen.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekSensorPollingProfileName, seletekSensorPolling.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekTotalTimeoutProfileName, seletekTotalTimeout.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekNoMotionProfileName, seletekNoMotion.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekRelayPauseProfileName, seletekRelayPause.ToString());
             }
         }
 

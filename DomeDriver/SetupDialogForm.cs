@@ -65,6 +65,50 @@ namespace ASCOM.photonSeletek.Dome
                 tl.LogMessage("Setup OK", $"New configuration values - Roof Relay No: {cmbRoofRelayNo.SelectedItem}");
                 DomeHardware.seletekRelayNo = int.Parse(cmbRoofRelayNo.SelectedItem.ToString());
             }
+
+            if (txtNoMotionTimeout.Text is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - No Motion Timeout: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - No Motion Timeout: {txtNoMotionTimeout.Text}");
+                DomeHardware.seletekNoMotion = int.Parse(txtNoMotionTimeout.Text);
+            }
+
+            if (txtTotalTimeout.Text is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Total Timeout: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Total Timeout: {txtTotalTimeout.Text}");
+                DomeHardware.seletekTotalTimeout = int.Parse(txtTotalTimeout.Text);
+            }   
+
+            if (txtRelayPause.Text is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Relay Pause: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Relay Pause: {txtRelayPause.Text}");
+                DomeHardware.seletekRelayPause = int.Parse(txtRelayPause.Text);
+            }
+
+            if (txtSensorPolling.Text is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Sensor Polling: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Sensor Polling: {txtSensorPolling.Text}");
+                DomeHardware.seletekSensorPolling = int.Parse(txtSensorPolling.Text);
+            }
       
         }
 
@@ -113,6 +157,12 @@ namespace ASCOM.photonSeletek.Dome
                 cmbRoofRelayNo.SelectedItem = DomeHardware.seletekRelayNo.ToString();
             }
             
+            txtNoMotionTimeout.Text = DomeHardware.seletekNoMotion.ToString();
+            txtTotalTimeout.Text = DomeHardware.seletekTotalTimeout.ToString();
+            txtRelayPause.Text = DomeHardware.seletekRelayPause.ToString();
+            txtSensorPolling.Text = DomeHardware.seletekSensorPolling.ToString();
+
+
             tl.LogMessage("InitUI", $"Set UI controls to Trace: {chkTrace.Checked}");
         }
 
@@ -136,6 +186,16 @@ namespace ASCOM.photonSeletek.Dome
         }
 
         private void comboBoxComPort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }

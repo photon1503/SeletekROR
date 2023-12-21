@@ -25,13 +25,13 @@ namespace ASCOM.LocalServer
         internal static TraceLogger tl;
 
         internal const string identifier = "Seletek.Firefly.ROR";
-        internal const int seletekRelayNo = 1;
-        internal const int seletekSensorRoofOpen = 2;
-        internal const int seletekSensorRoofClosed = 1;
-        internal const int delayRelay = 1000;       //Delay between multiple relay activations in milliseconds
-        internal const int delaySensor = 100;       //Delay between sensor checks in milliseconds
-        internal const int timoutSensor = 10;      //Timeout for sensor checks in seconds
-        internal const int timoutTotal = 30;      //Total timeout for roof movement in seconds  //TODO: Make this a setting
+        internal static int seletekRelayNo = 1;
+        internal static int seletekSensorRoofOpen = 2;
+        internal static int seletekSensorRoofClosed = 1;
+        internal static int delayRelay = 1000;       //Delay between multiple relay activations in milliseconds
+        internal static int delaySensor = 100;       //Delay between sensor checks in milliseconds
+        internal  static int timeoutNoMotion = 10;      //Timeout for sensor checks in seconds
+        internal  static int timoutTotal = 300;      //Total timeout for roof movement in seconds  //TODO: Make this a setting
         internal const int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
 
         public static ControlForm UserForm;
@@ -39,11 +39,22 @@ namespace ASCOM.LocalServer
         /// <summary>
         /// Constructor
         /// </summary>
-        public Firefly(TraceLogger tlM)
+        public Firefly(TraceLogger tlM, int sensorPolling, int RelaysPause, int TotalTimeout, int NoMotionTimeout, int RelayNo, int SensorOpen, int SensorClosed)
         {
             firefly = new FireflyEXP.Help();
             tl = tlM;
             tl.LogMessageCrLf(identifier, "Seletek Firefly ROR started");
+
+            delayRelay = RelaysPause;
+            delaySensor = sensorPolling;
+            timoutTotal = TotalTimeout;
+            timeoutNoMotion = NoMotionTimeout;
+            seletekRelayNo = RelayNo;
+            seletekSensorRoofOpen = SensorOpen;
+            seletekSensorRoofClosed = SensorClosed;
+
+            //timoutRoofCycleCompletion = TotalTimeout;
+
             UserForm = new ControlForm();
 
             // Start a new thread to show the status window
@@ -228,7 +239,7 @@ namespace ASCOM.LocalServer
 
                 SetElapsedUI(startTime);
 
-                if (CheckTimeout(lastRetryTime, timoutSensor, "Roof is not moving"))
+                if (CheckTimeout(lastRetryTime, timeoutNoMotion, "Roof is not moving"))
                 {
                     ActivateRelay();
                     lastRetryTime = DateTime.Now;
