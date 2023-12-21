@@ -16,7 +16,21 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 * Garage door type opener for Roll-off-Roof with 2 limit switches
 * Seletek Firefly Hardware and Software
 * ASCOM Platform 6.5 or later
+  
+---
+## Configuration
 
+<img align="left" width="264" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/6ff3cd28-74d4-4ace-a208-fb40873f7394">
+
+* Roof Open Sensor - Sensor ID from Seletek which is true when the roof is open
+* Roof Closed Sensor - SensoID from Seletek which is true when the roof is closed
+* Roof Relay Number - Relay ID from Seletek which will start/stop a motion of the roof
+* No motion timeout - Timeout in seconds after a sensor must become false when a open/close command was triggerd
+* Total timeout - Timout in seconds when a open/close command fails
+* Relay pause - Delay between two relay pushes
+* Sensor polling - Frequency of sensor polling
+  
+---
 ## Architecture
 ### Using VBS
 ```mermaid
