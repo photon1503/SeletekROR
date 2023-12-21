@@ -16,6 +16,7 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 * Garage door type opener for Roll-off-Roof with 2 limit switches
 * Seletek Firefly Hardware and Software
 * ASCOM Platform 6.5 or later
+  
 ---
 ## Configuration
 
