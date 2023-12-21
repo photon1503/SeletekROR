@@ -18,7 +18,7 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 * ASCOM Platform 6.5 or later
 
 ## Configuration
-<img width="264" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/6ff3cd28-74d4-4ace-a208-fb40873f7394">
+<img align="left" width="264" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/6ff3cd28-74d4-4ace-a208-fb40873f7394">
 
 * Roof Open Sensor - Sensor ID from Seletek which is true when the roof is open
 * Roof Closed Sensor - SensoID from Seletek which is true when the roof is closed
