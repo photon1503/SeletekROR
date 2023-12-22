@@ -30,7 +30,7 @@ namespace ASCOM.photonSeletek.Dome
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => Firefly.Stop());        
+            await Task.Run(() => Firefly.Stop());
         }
 
         public void UpdateStatus(string text)
@@ -43,13 +43,11 @@ namespace ASCOM.photonSeletek.Dome
             //prefix with date and time            
 
             text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss\t") + " " + text;
-            if (clear) 
+            if (clear)
                 txtLog.Text = text + Environment.NewLine;
             else
-                txtLog.AppendText(text + Environment.NewLine);
-        }
-
-    
+                txtLog.Text += text + Environment.NewLine; // AppendText(text + Environment.NewLine);
+        }  
 
         private async void button3_Click(object sender, EventArgs e)
         {

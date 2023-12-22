@@ -32,7 +32,9 @@ namespace ASCOM.LocalServer
         internal static int sensorPollingMs = 100;       //Delay between sensor checks in milliseconds
         internal static int noMotionTimeout = 10;      //Timeout for sensor checks in seconds
         internal static int totalTimeout = 300;      //Total timeout for roof movement in seconds  
-        internal static int timoutRoofCycleCompletion = 30; //Timeout for the roof to change to state
+        internal static int timeoutCalibration = 30; //Timeout for the roof to change to state
+
+        internal static DateTime lastRetryTime;
 
         public static ControlForm UserForm;
 
@@ -52,8 +54,9 @@ namespace ASCOM.LocalServer
             seletekRelayNo = RelayNo;
             sensorOpenId = SensorOpen;
             sensorClosedId = SensorClosed;
-            timoutRoofCycleCompletion = TimeoutCalibration;
+            timeoutCalibration = TimeoutCalibration;
 
+            tl.LogMessageCrLf(identifier, "Starting UI");
             //timoutRoofCycleCompletion = TotalTimeout;
 
             UserForm = new ControlForm();
@@ -128,6 +131,7 @@ namespace ASCOM.LocalServer
         {
             if (isRoofOpen && !isRoofClosed) { currentState = State.Open; }
             if (!isRoofOpen && isRoofClosed) { currentState = State.Closed; }
+            Thread.Sleep(sensorPollingMs);
         }
 
         /// <summary>
@@ -156,12 +160,18 @@ namespace ASCOM.LocalServer
         /// <summary>
         /// Activate the relay
         /// </summary>
-        public static void ActivateRelay()
+        public static void ActivateRelay(bool reverse=false)
         {
 
             UserForm.SetText("Activating relay");
             firefly.RelayChange(seletekRelayNo);
             Thread.Sleep(relayPauseMs);
+            if (reverse)
+            {
+                UserForm.SetText("Reversing direction");
+                firefly.RelayChange(seletekRelayNo);
+                Thread.Sleep(relayPauseMs);
+            }
         }
 
 
@@ -188,10 +198,7 @@ namespace ASCOM.LocalServer
        /// <exception cref="DriverException"></exception>
         private static bool CheckTimeout(DateTime startTime, double timeoutSeconds, string message, bool throwException=false)
         {
-            var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
-          
-
-            if (Elapsed > timeoutSeconds)
+            if (DateTime.Now.Subtract(startTime).TotalSeconds > timeoutSeconds)
             {
                 UserForm.SetText(message);
           
@@ -205,6 +212,18 @@ namespace ASCOM.LocalServer
         }
         
 
+        public static void CheckRoof(DateTime startTime, int timeout, bool reverse)
+        {
+            SetStateFromSensor();
+            CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timeout reached", true);
+
+            if (CheckTimeout(lastRetryTime, timeout, "Retrying to move roof."))
+            {
+                ActivateRelay( reverse);
+                lastRetryTime = DateTime.Now;
+            }
+           
+        }
 
         /// <summary>
         /// Open or close the roof
@@ -220,9 +239,8 @@ namespace ASCOM.LocalServer
             }
             UserForm.SetText($"Moving roof from {GetStateString()} to {newState}", true);
             DateTime startTime = DateTime.Now;
-            DateTime lastRetryTime = startTime;
+            lastRetryTime = startTime;
 
-            int retries = 0;
             ActivateRelay();
             isSlewing = true;
 
@@ -231,19 +249,9 @@ namespace ASCOM.LocalServer
             abort = false;
 
             // First segment - Check for initial movement
-            while ((newState == State.Open && isRoofClosed) ||
-                   (newState == State.Closed && isRoofOpen))
+            while (((newState == State.Open && isRoofClosed) || (newState == State.Closed && isRoofOpen)) && !abort)
             {
-                if (abort) break;
-
-                CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timout reached", true);
-                
-                if (CheckTimeout(lastRetryTime, noMotionTimeout, "Roof did not move"))
-                {
-                    ActivateRelay();
-                    lastRetryTime = DateTime.Now;
-                }
-                Thread.Sleep(sensorPollingMs);
+                CheckRoof(startTime, noMotionTimeout, reverse: false);
             }
 
             if (abort) return;
@@ -255,21 +263,9 @@ namespace ASCOM.LocalServer
             // Second segment - Wait for completion
             UserForm.SetText($"Waiting for roof to {newState}");
             lastRetryTime = DateTime.Now;
-            while (newState != currentState)
+            while (newState != currentState && !abort)
             {
-                if (abort) break;
-
-                SetStateFromSensor();               
-                CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timeout reached", true);
-
-                if (CheckTimeout(lastRetryTime, timoutRoofCycleCompletion, $"Retrying to move roof. Retry #{retries}"))
-                {
-                    ActivateRelay();
-                    ActivateRelay();
-                    retries++;
-                    lastRetryTime = DateTime.Now;
-                }
-                Thread.Sleep(sensorPollingMs);
+                CheckRoof(startTime, timeoutCalibration, reverse: true);
             }
                         
             isSlewing = false;
@@ -284,8 +280,6 @@ namespace ASCOM.LocalServer
         /// </summary>
         public static void Open()
         {
-            UserForm.SetText("Opening roof");
-
             MoveRoof(State.Open);
         }
 
@@ -294,8 +288,6 @@ namespace ASCOM.LocalServer
         /// </summary>
         public static void Close()
         {
-            UserForm.SetText("Closing roof");
-
             MoveRoof(State.Closed);
         }
     }
