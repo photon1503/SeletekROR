@@ -61,7 +61,7 @@
     <AssemblyOriginatorKeyFile>LocalServer.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Untitled-design.ico</ApplicationIcon>
+    <ApplicationIcon>dach.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL" />
@@ -122,6 +122,7 @@
   <ItemGroup>
     <Content Include="ASCOM.ico" />
     <Content Include="ASCOM.png" />
+    <Content Include="dach.ico" />
     <Content Include="ReadMe.htm" />
     <Content Include="Untitled-design.ico" />
   </ItemGroup>

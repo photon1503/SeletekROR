@@ -52,3 +52,7 @@ flowchart LR
     n3 -->|USB|n4["Seletek Firefly Hardware"]
 ```
 	
+
+## Credits
+
+Icon made by [max.icons](https://www.flaticon.com/de/autoren/maxicons) from [www.flaticon.com](https://www.flaticon.com/)
