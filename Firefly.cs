@@ -173,6 +173,7 @@ namespace ASCOM.LocalServer
             ActivateRelay();
             abort = true;
             currentState = State.Unknown;
+            UserForm.SetText("Roof movement aborted");
         }
 
 
@@ -203,13 +204,7 @@ namespace ASCOM.LocalServer
             return false; // Timeout not reached
         }
         
-        private static void SetElapsedUI(DateTime startTime)
-        {
-            var Elapsed = DateTime.Now.Subtract(startTime).TotalSeconds;
-            
-            string el = $"{Elapsed / 60:00}:{Elapsed % 60:00.0}";
-            UserForm.SetElapsed($"Elapsed: {el}");            
-        }
+
 
         /// <summary>
         /// Open or close the roof
@@ -217,12 +212,13 @@ namespace ASCOM.LocalServer
         /// <param name="newState"></param>
         public static void MoveRoof(State newState)
         {
+
             if (currentState == newState)
             {
                 UserForm.SetText($"Roof is already {GetStateString()}");
                 return;
             }
-
+            UserForm.SetText($"Moving roof from {GetStateString()} to {newState}", true);
             DateTime startTime = DateTime.Now;
             DateTime lastRetryTime = startTime;
 
@@ -230,7 +226,7 @@ namespace ASCOM.LocalServer
             ActivateRelay();
             isSlewing = true;
 
-            UserForm.SetText("Checking intial movement");
+            UserForm.SetText("Waiting for intial movement");
 
             abort = false;
 
@@ -242,8 +238,6 @@ namespace ASCOM.LocalServer
 
                 CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timout reached", true);
                 
-                SetElapsedUI(startTime);
-
                 if (CheckTimeout(lastRetryTime, noMotionTimeout, "Roof did not move"))
                 {
                     ActivateRelay();
@@ -259,14 +253,13 @@ namespace ASCOM.LocalServer
             UpdateStatusUI();
 
             // Second segment - Wait for completion
-            UserForm.SetText("Waiting for roof...");
+            UserForm.SetText($"Waiting for roof to {newState}");
             lastRetryTime = DateTime.Now;
             while (newState != currentState)
             {
                 if (abort) break;
 
                 SetStateFromSensor();               
-                SetElapsedUI(startTime);
                 CheckTimeout(startTime, totalTimeout, "Roof is not moving, Timeout reached", true);
 
                 if (CheckTimeout(lastRetryTime, timoutRoofCycleCompletion, $"Retrying to move roof. Retry #{retries}"))
@@ -282,6 +275,7 @@ namespace ASCOM.LocalServer
             isSlewing = false;
 
             SetStateFromSensor();
+            UserForm.SetText($"Roof is now {GetStateString()}");
             UpdateStatusUI();
         }
 

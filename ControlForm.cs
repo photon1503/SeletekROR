@@ -38,15 +38,18 @@ namespace ASCOM.photonSeletek.Dome
             lblStatus.Text = text;
         }
 
-        public void SetText(string text)
+        public void SetText(string text, bool clear=false)
         {
-            lblText.Text = text;
+            //prefix with date and time            
+
+            text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss\t") + " " + text;
+            if (clear) 
+                txtLog.Text = text + Environment.NewLine;
+            else
+                txtLog.AppendText(text + Environment.NewLine);
         }
 
-        public void SetElapsed(string text)
-        {
-            lblElapsed.Text = text;
-        }
+    
 
         private async void button3_Click(object sender, EventArgs e)
         {
