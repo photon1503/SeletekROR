@@ -39,7 +39,7 @@ namespace ASCOM.LocalServer
         /// <summary>
         /// Constructor
         /// </summary>
-        public Firefly(TraceLogger tlM, int SensorPolling, int RelayPause, int TotalTimeout, int NoMotionTimeout, int RelayNo, int SensorOpen, int SensorClosed)
+        public Firefly(TraceLogger tlM, int SensorPolling, int RelayPause, int TotalTimeout, int NoMotionTimeout, int RelayNo, int SensorOpen, int SensorClosed, int TimeoutCalibration)
         {
             firefly = new FireflyEXP.Help();
             tl = tlM;
@@ -52,6 +52,7 @@ namespace ASCOM.LocalServer
             seletekRelayNo = RelayNo;
             sensorOpenId = SensorOpen;
             sensorClosedId = SensorClosed;
+            timoutRoofCycleCompletion = TimeoutCalibration;
 
             //timoutRoofCycleCompletion = TotalTimeout;
 

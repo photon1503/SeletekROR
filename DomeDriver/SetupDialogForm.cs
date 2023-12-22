@@ -109,6 +109,17 @@ namespace ASCOM.photonSeletek.Dome
                 tl.LogMessage("Setup OK", $"New configuration values - Sensor Polling: {txtSensorPolling.Text}");
                 DomeHardware.seletekSensorPolling = int.Parse(txtSensorPolling.Text);
             }
+
+            if (txtCalibration.Text is null) // No COM port selected
+            {
+                tl.LogMessage("Setup OK", $"New configuration values - Calibration: Not selected");
+            }
+            else // A valid COM port has been selected
+            {
+                
+                tl.LogMessage("Setup OK", $"New configuration values - Calibration: {txtCalibration.Text}");
+                DomeHardware.seletekTimeoutCalibration = int.Parse(txtCalibration.Text);
+            }
       
         }
 
@@ -161,6 +172,7 @@ namespace ASCOM.photonSeletek.Dome
             txtTotalTimeout.Text = DomeHardware.seletekTotalTimeout.ToString();
             txtRelayPause.Text = DomeHardware.seletekRelayPause.ToString();
             txtSensorPolling.Text = DomeHardware.seletekSensorPolling.ToString();
+            txtCalibration.Text = DomeHardware.seletekTimeoutCalibration.ToString();
 
 
             tl.LogMessage("InitUI", $"Set UI controls to Trace: {chkTrace.Checked}");
@@ -196,6 +208,16 @@ namespace ASCOM.photonSeletek.Dome
         }
 
         private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtCalibration_TextChanged(object sender, EventArgs e)
         {
 
         }

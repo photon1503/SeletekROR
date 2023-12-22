@@ -45,6 +45,7 @@ namespace ASCOM.photonSeletek.Dome
         internal static string seletekTotalTimeoutProfileName = "seletekTotalTimeout";
         internal static string seletekNoMotionProfileName = "seletekNoMotion";
         internal static string seletekRelayPauseProfileName = "seletekRelayPause";
+        internal static string seletekTimeoutCalibrationProfileNam = "seletekTimeoutCalibration";
 
         internal static int seletekSensorRoofClosedDefault = 1;
         internal static int seletekSensorRoofOpenDefault = 2;
@@ -53,7 +54,7 @@ namespace ASCOM.photonSeletek.Dome
         internal static int seletekTotalTimeoutDefault = 300;
         internal static int seletekNoMotionDefault = 10;
         internal static int seletekRelayPauseDefault = 1000;
-
+        internal static int seletekTimeoutCalibrationDefault = 30;
 
         internal const string traceStateProfileName = "Trace Level";
         internal const string traceStateDefault = "true";
@@ -74,6 +75,7 @@ namespace ASCOM.photonSeletek.Dome
         internal static int seletekTotalTimeout = 300;
         internal static int seletekNoMotion = 10;
         internal static int seletekRelayPause = 1000;
+        internal static int seletekTimeoutCalibration = 30;
 
 
 
@@ -320,7 +322,7 @@ namespace ASCOM.photonSeletek.Dome
                     LogMessage("Connected Set", $"Connecting ");
 
                     // TODO insert connect to the device code here
-                    firefly = new Firefly(tl, seletekSensorPolling, seletekRelayPause, seletekTotalTimeout, seletekNoMotion, seletekRelayNo, seletekSensorRoofOpen, seletekSensorRoofClosed);
+                    firefly = new Firefly(tl, seletekSensorPolling, seletekRelayPause, seletekTotalTimeout, seletekNoMotion, seletekRelayNo, seletekSensorRoofOpen, seletekSensorRoofClosed, seletekTimeoutCalibration);
 
                     connectedState = true;
                 }
@@ -762,6 +764,7 @@ namespace ASCOM.photonSeletek.Dome
                 seletekTotalTimeout = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekTotalTimeoutProfileName, string.Empty, seletekTotalTimeoutDefault.ToString()));
                 seletekNoMotion = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekNoMotionProfileName, string.Empty, seletekNoMotionDefault.ToString()));
                 seletekRelayPause = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekRelayPauseProfileName, string.Empty, seletekRelayPauseDefault.ToString()));
+                seletekTimeoutCalibration = Convert.ToInt16(driverProfile.GetValue(DriverProgId, seletekTimeoutCalibrationProfileNam, string.Empty, seletekTimeoutCalibrationDefault.ToString()));
 
 
             }
@@ -784,6 +787,7 @@ namespace ASCOM.photonSeletek.Dome
                 driverProfile.WriteValue(DriverProgId, seletekTotalTimeoutProfileName, seletekTotalTimeout.ToString());
                 driverProfile.WriteValue(DriverProgId, seletekNoMotionProfileName, seletekNoMotion.ToString());
                 driverProfile.WriteValue(DriverProgId, seletekRelayPauseProfileName, seletekRelayPause.ToString());
+                driverProfile.WriteValue(DriverProgId, seletekTimeoutCalibrationProfileNam, seletekTimeoutCalibration.ToString());
             }
         }
 

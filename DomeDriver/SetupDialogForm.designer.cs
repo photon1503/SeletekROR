@@ -52,6 +52,9 @@ namespace ASCOM.photonSeletek.Dome
             this.txtSensorPolling = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtCalibration = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picASCOM)).BeginInit();
             this.SuspendLayout();
             // 
@@ -311,11 +314,43 @@ namespace ASCOM.photonSeletek.Dome
             this.label12.Text = "milliseconds";
             this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(329, 394);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(69, 20);
+            this.label13.TabIndex = 28;
+            this.label13.Text = "seconds";
+            this.label13.Click += new System.EventHandler(this.label13_Click);
+            // 
+            // txtCalibration
+            // 
+            this.txtCalibration.Location = new System.Drawing.Point(206, 391);
+            this.txtCalibration.Name = "txtCalibration";
+            this.txtCalibration.Size = new System.Drawing.Size(116, 26);
+            this.txtCalibration.TabIndex = 27;
+            this.txtCalibration.TextChanged += new System.EventHandler(this.txtCalibration_TextChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(22, 394);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(118, 20);
+            this.label14.TabIndex = 26;
+            this.label14.Text = "Calibration time";
+            // 
             // SetupDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(525, 509);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.txtCalibration);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txtSensorPolling);
@@ -379,5 +414,8 @@ namespace ASCOM.photonSeletek.Dome
         private System.Windows.Forms.TextBox txtSensorPolling;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtCalibration;
+        private System.Windows.Forms.Label label14;
     }
 }
