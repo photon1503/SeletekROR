@@ -1,4 +1,3 @@
-# WORK IN PROGRESS
 # Seletek Firefly ROR Driver
 
 ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
