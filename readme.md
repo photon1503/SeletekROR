@@ -7,9 +7,11 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 * Can be used by mulitple programs simultaneously
 * Can recover from unknown roof state
 * Timeout by time instead of number of retries
-* Control UI
 * VBS (VBScript) was declared deprecated by Microsoft and will be removed from future Windows releases
   https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features
+* Control UI
+* <img width="404" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/aea9cfa5-3e4f-4974-9525-2c6f05164ce0">
+
 
 
 ## Requirements
@@ -21,7 +23,8 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 ---
 ## Configuration
 
-<img align="left" width="264" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/6ff3cd28-74d4-4ace-a208-fb40873f7394">
+<img width="268" alt="image" src="https://github.com/photon1503/SeletekROR/assets/14548927/5a0f017b-4150-4029-bee9-0fc08cf5020c">
+
 
 * Roof Open Sensor - Sensor ID from Seletek which is true when the roof is open
 * Roof Closed Sensor - SensoID from Seletek which is true when the roof is closed
