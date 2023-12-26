@@ -3,7 +3,7 @@
 
 ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 
-**Advantages to VBS Scripts**
+**Advantages**
 * Can be used by mulitple programs simultaneously
 * Can recover from unknown roof state
 * Timeout by time instead of number of retries
@@ -16,6 +16,7 @@ ASCOM Dome Driver for Lunatico Seletek Firefly for Roll-off-Roofs
 * Garage door type opener for Roll-off-Roof with 2 limit switches
 * Seletek Firefly Hardware and Software
 * ASCOM Platform 6.5 or later
+* Windows 7 or later
   
 ---
 ## Configuration
