@@ -168,7 +168,11 @@ namespace ASCOM.LocalServer
             Thread.Sleep(relayPauseMs);
             if (reverse)
             {
-                UserForm.SetText("Reversing direction");
+                Thread.Sleep(relayPauseMs * 2);
+                UserForm.SetText("Reversing direction (1)");
+                firefly.RelayChange(seletekRelayNo);
+                Thread.Sleep(relayPauseMs*5);
+                UserForm.SetText("Reversing direction (2)");
                 firefly.RelayChange(seletekRelayNo);
                 Thread.Sleep(relayPauseMs);
             }
