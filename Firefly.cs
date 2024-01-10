@@ -223,7 +223,9 @@ namespace ASCOM.LocalServer
 
             if (CheckTimeout(lastRetryTime, timeout, "Retrying to move roof."))
             {
-                ActivateRelay( reverse);
+                bool _reverse = false;
+                if (currentState == State.Opening) _reverse = true;
+                ActivateRelay( _reverse);
                 lastRetryTime = DateTime.Now;
             }
            
